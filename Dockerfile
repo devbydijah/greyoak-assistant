@@ -1,10 +1,21 @@
-# Dockerfile for Grey-Oak Assistant Mock Suite
+# Use Node 18 LTS
 FROM node:18
 
+# Create app directory
 WORKDIR /app
-COPY . .
 
+# Install dependencies
+COPY package.json package-lock.json* ./
 RUN npm install
-EXPOSE 4000 5000
 
-CMD ["sh", "-c", "node greyoak-mock-server.js & node greyoak-middleware-router.js"]
+# Copy only the necessary runtime files
+COPY server.js intent-mapper.js ./
+
+# (Optional: copy these if used locally but safe for deploy)
+COPY greyoak-mock-server.js greyoak-middleware-router.js ./
+
+# Expose the port for Render
+EXPOSE 5000
+
+# Run the intent router
+CMD ["node", "server.js"]
