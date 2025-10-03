@@ -1,92 +1,90 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+const intentMapper = require("./intent-mapper");
+
 const app = express();
-const port = process.env.PORT || 10000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-const {
-  handleProposal,
-  handleInspectionPack,
-  handleApprovalRequest,
-  handleWorkOrder,
-  handleListVendors,
-  handleUploadUrl,
-} = require("./greyoak-middleware-router");
-
-// Root route for sanity check
-app.get("/", (req, res) => {
-  res.send("🚀 Intent router live on http://localhost:10000");
+app.post("/gpt-message", (req, res) => {
+  const { message } = req.body;
+  const result = intentMapper(message);
+  result.timestampWAT = new Date().toLocaleString("en-NG", {
+    timeZone: "Africa/Lagos",
+  });
+  res.json(result);
 });
 
-// === POST /proposals ===
-app.post("/proposals", async (req, res) => {
-  try {
-    const result = await handleProposal(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Proposal error:", error);
-    res.status(500).json({ error: "Failed to create proposal" });
-  }
+// Mock endpoints for ActionsGPT to connect to
+app.post("/proposals", (req, res) => {
+  res.status(201).json({
+    proposalId: "abc123",
+    outcome: "Proposal created",
+    priceNaira: 100000,
+    priceDisplay: "₦100,000",
+    bodyMarkdown: "Your proposal details go here.",
+    eta: "24 hours",
+    risks: ["Delayed inspection", "Missing documents"],
+    timestampWAT: new Date().toLocaleString("en-NG", {
+      timeZone: "Africa/Lagos",
+    }),
+    signUrl: "https://sign.greyoak.ng/proposal/abc123",
+  });
 });
 
-// === POST /inspections/packs ===
-app.post("/inspections/packs", async (req, res) => {
-  try {
-    const result = await handleInspectionPack(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Inspection error:", error);
-    res.status(500).json({ error: "Failed to create inspection pack" });
-  }
+app.post("/inspections/packs", (req, res) => {
+  res.status(201).json({
+    packId: "pack001",
+    checklist: ["Exterior", "Interior", "Roof"],
+    uploadFolderUrl: "https://uploads.greyoak.ng/packs/pack001",
+    timestampWAT: new Date().toLocaleString("en-NG", {
+      timeZone: "Africa/Lagos",
+    }),
+  });
 });
 
-// === POST /approvals ===
-app.post("/approvals", async (req, res) => {
-  try {
-    const result = await handleApprovalRequest(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Approval error:", error);
-    res.status(500).json({ error: "Failed to request approval" });
-  }
+app.get("/vendors", (req, res) => {
+  res.json({
+    vendors: [
+      { vendorId: "v1", name: "FixIt Plumbing", sla: "24 hours" },
+      { vendorId: "v2", name: "PowerUp Electric", sla: "48 hours" },
+    ],
+  });
 });
 
-// === POST /workorders ===
-app.post("/workorders", async (req, res) => {
-  try {
-    const result = await handleWorkOrder(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Work order error:", error);
-    res.status(500).json({ error: "Failed to create work order" });
-  }
+app.post("/approvals", (req, res) => {
+  res.status(201).json({
+    approvalId: "appr567",
+    summary: "Approval for plumbing fix",
+    capDisplay: "₦75,000",
+    status: "pending",
+    timestampWAT: new Date().toLocaleString("en-NG", {
+      timeZone: "Africa/Lagos",
+    }),
+  });
 });
 
-// === GET /vendors ===
-app.get("/vendors", async (req, res) => {
-  try {
-    const service = req.query.service;
-    const result = await handleListVendors(service);
-    res.json(result);
-  } catch (error) {
-    console.error("Vendor error:", error);
-    res.status(500).json({ error: "Failed to list vendors" });
-  }
+app.post("/workorders", (req, res) => {
+  res.status(201).json({
+    workOrderId: "wo789",
+    vendorName: "FixIt Plumbing",
+    status: "created",
+    timestampWAT: new Date().toLocaleString("en-NG", {
+      timeZone: "Africa/Lagos",
+    }),
+  });
 });
 
-// === POST /files/upload-url ===
-app.post("/files/upload-url", async (req, res) => {
-  try {
-    const result = await handleUploadUrl(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    console.error("Upload URL error:", error);
-    res.status(500).json({ error: "Failed to generate upload URL" });
-  }
+app.post("/files/upload-url", (req, res) => {
+  res.status(201).json({
+    url: "https://s3.upload.greyoak.ng/tmp/file123.jpg",
+    expiresInSeconds: 3600,
+  });
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Intent router live on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`🧠 Intent middleware router on http://localhost:${PORT}`);
 });
