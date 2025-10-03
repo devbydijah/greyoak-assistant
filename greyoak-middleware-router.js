@@ -1,2 +1,2 @@
-// Grey-Oak Middleware Router — safe to ignore in Render
-// (left empty for Render-only deploys)
+// Grey-Oak Middleware Router — placeholder for local use only
+console.log("🛑 Middleware router disabled in Render deploy");

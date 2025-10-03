@@ -1,2 +1,2 @@
-// Grey-Oak Mock Server — safe to ignore in Render
-// (left empty for Render-only deploys)
+// Grey-Oak Mock Server — placeholder for local use only
+console.log("🛑 Mock server disabled in Render deploy");
