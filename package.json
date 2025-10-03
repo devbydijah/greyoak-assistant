@@ -1,0 +1,17 @@
+{
+  "name": "greyoak-assistant-suite",
+  "version": "1.0.0",
+  "description": "Grey-Oak Assistant mock API server and GPT intent router",
+  "main": "greyoak-mock-server.js",
+  "scripts": {
+    "start": "node greyoak-mock-server.js & node greyoak-middleware-router.js",
+    "mock": "node greyoak-mock-server.js",
+    "router": "node greyoak-middleware-router.js"
+  },
+  "author": "Grey-Oak Ops",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  }
+}
