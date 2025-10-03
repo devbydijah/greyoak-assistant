@@ -1,2 +1,2 @@
-// Grey-Oak Mock Server — placeholder for local use only
-console.log("🛑 Mock server disabled in Render deploy");
+// greyoak-mock-server.js
+// Mock server not needed in Render – combined in server.js

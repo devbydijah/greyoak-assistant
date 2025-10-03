@@ -1,2 +1,2 @@
-// Grey-Oak Middleware Router — placeholder for local use only
-console.log("🛑 Middleware router disabled in Render deploy");
+// greyoak-middleware-router.js
+// Separate router not used – logic unified in server.js

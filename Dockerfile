@@ -1,21 +1,18 @@
-# Use Node 18 LTS
+# Use Node.js base image
 FROM node:18
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package manifests and install dependencies
 COPY package.json package-lock.json* ./
 RUN npm install
 
-# Copy only the necessary runtime files
-COPY server.js intent-mapper.js ./
+# Copy app files
+COPY server.js intent-mapper.js greyoak-mock-server.js greyoak-middleware-router.js ./
 
-# (Optional: copy these if used locally but safe for deploy)
-COPY greyoak-mock-server.js greyoak-middleware-router.js ./
+# Expose the app port
+EXPOSE 10000
 
-# Expose the port for Render
-EXPOSE 5000
-
-# Run the intent router
+# Start the app
 CMD ["node", "server.js"]
